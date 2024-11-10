@@ -1,9 +1,12 @@
 import tkinter as tk
+from main import WebAutomation
+from tkinter import messagebox
 
 class App:
     def __init__(self, root):
         self.root = root
         self.root.title("Web Automation")
+        self.web_automation = None  # Initialize as None
 
         # Login Frame
         self.login_frame = tk.Frame(self.root)
@@ -45,7 +48,7 @@ class App:
         tk.Button(self.button_frame, text="Close Browser", command=self.close_browser).grid(row=0, column=1, padx=5)
 
     def submit_data(self):
-        # Example of retrieving data from entries
+        # Retrieve data from entries
         username = self.entry_username.get()
         password = self.entry_password.get()
         fullname = self.entry_fullname.get()
@@ -53,8 +56,18 @@ class App:
         current_address = self.entry_current_address.get()
         permanent_address = self.entry_permanent_address.get()
 
+        # Start web automation
+        self.web_automation = WebAutomation()
+        self.web_automation.login(username, password)
+        self.web_automation.fill_form(fullname, email, current_address, permanent_address)
+
     def close_browser(self):
-        print("Browser closed.")
+        if self.web_automation:
+            self.web_automation.close()
+            messagebox.showinfo("Browser Closed", "Submitted Successfully")
+        else:
+            messagebox.showwarning("Warning", "Browser is not open yet.")
+
 
 root = tk.Tk()
 app = App(root)
